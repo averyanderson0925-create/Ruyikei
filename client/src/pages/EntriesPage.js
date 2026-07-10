@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
@@ -22,7 +22,7 @@ const EntriesPage = () => {
     window.location.href = '/login';
   };
 
-  const fetchEntries = async () => {
+  const fetchEntries = useCallback(async () => {
     setLoading(true);
     try {
       const response = await api.get('/entries', {
@@ -35,11 +35,11 @@ const EntriesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, nationality, page]);
 
   useEffect(() => {
     fetchEntries();
-  }, [search, nationality, page]);
+  }, [fetchEntries]);
 
   const handleCopy = async (value, label) => {
     try {
