@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
 import EntriesPage from './pages/EntriesPage';
 import AddEntryPage from './pages/AddEntryPage';
 import SettingsPage from './pages/SettingsPage';
@@ -21,7 +20,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage onAuth={() => setAuthenticated(true)} />} />
-        <Route path="/" element={<ProtectedRoute authenticated={authenticated}><DashboardPage /></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute authenticated={authenticated}><EntriesPage /></ProtectedRoute>} />
         <Route path="/entries" element={<ProtectedRoute authenticated={authenticated}><EntriesPage /></ProtectedRoute>} />
         <Route path="/add" element={<ProtectedRoute authenticated={authenticated}><AddEntryPage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute authenticated={authenticated}><SettingsPage /></ProtectedRoute>} />

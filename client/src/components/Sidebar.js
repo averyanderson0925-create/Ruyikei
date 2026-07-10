@@ -2,8 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { FiGrid, FiList, FiPlusCircle, FiSettings, FiUser, FiLogOut } from 'react-icons/fi';
 
 const navItems = [
-  { label: 'Dashboard', to: '/', icon: FiGrid },
-  { label: 'All Entries', to: '/entries', icon: FiList },
+  { label: 'All Entries', to: '/', icon: FiList },
   { label: 'Add New Entry', to: '/add', icon: FiPlusCircle },
   { label: 'Settings', to: '/settings', icon: FiSettings },
   { label: 'Profile', to: '/profile', icon: FiUser },
