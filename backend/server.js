@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
 const Admin = require('./models/Admin');
 const bcrypt = require('bcryptjs');
+const pool = require("./db");
 
 dotenv.config();
 const app = express();
@@ -39,15 +40,29 @@ const seedAdmin = async () => {
   }
 };
 
-const startServer = async () => {
-  await connectDB();
-  app.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
-    if (!process.env.JWT_SECRET) {
-      console.warn('Warning: JWT_SECRET is not set. Authentication may fail or produce invalid tokens. Set JWT_SECRET in .env for production.');
-    }
-    await seedAdmin();
-  });
-};
+app.get("/", async (req, res) => {
 
-startServer();
+    const result = await pool.query("SELECT NOW()");
+
+    res.json(result.rows);
+
+});
+
+app.listen(5000, () => {
+
+    console.log("Server Running");
+
+});
+
+// const startServer = async () => {
+//   await connectDB();
+//   app.listen(PORT, async () => {
+//     console.log(`Server running on port ${PORT}`);
+//     if (!process.env.JWT_SECRET) {
+//       console.warn('Warning: JWT_SECRET is not set. Authentication may fail or produce invalid tokens. Set JWT_SECRET in .env for production.');
+//     }
+//     await seedAdmin();
+//   });
+// };
+
+// startServer();
