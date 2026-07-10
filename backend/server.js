@@ -6,20 +6,23 @@ const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
 const Admin = require('./models/Admin');
 const bcrypt = require('bcryptjs');
-const pool = require("./db");
 
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:3000'] : true,
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', entriesRoutes);
 
 app.get('/', (req, res) => {
-  res.send({ message: 'Secure Data Vault API is running' });
+  res.json({ message: 'Secure Data Vault API is running' });
 });
 
 app.get('/api/health', (req, res) => {
@@ -40,29 +43,20 @@ const seedAdmin = async () => {
   }
 };
 
-app.get("/", async (req, res) => {
+const startServer = async () => {
+  try {
+    await connectDB();
+    await seedAdmin();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      if (!process.env.JWT_SECRET) {
+        console.warn('Warning: JWT_SECRET is not set. Authentication may fail or produce invalid tokens. Set JWT_SECRET in Railway variables.');
+      }
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+};
 
-    const result = await pool.query("SELECT NOW()");
-
-    res.json(result.rows);
-
-});
-
-app.listen(5000, () => {
-
-    console.log("Server Running");
-
-});
-
-// const startServer = async () => {
-//   await connectDB();
-//   app.listen(PORT, async () => {
-//     console.log(`Server running on port ${PORT}`);
-//     if (!process.env.JWT_SECRET) {
-//       console.warn('Warning: JWT_SECRET is not set. Authentication may fail or produce invalid tokens. Set JWT_SECRET in .env for production.');
-//     }
-//     await seedAdmin();
-//   });
-// };
-
-// startServer();
+startServer();
