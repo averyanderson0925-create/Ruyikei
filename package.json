@@ -1,0 +1,9 @@
+{
+  "name": "crud-monorepo",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd backend && npm install && cd ../client && npm install",
+    "build": "cd client && npm install && npm run build",
+    "start": "cd backend && npm start"
+  }
+}

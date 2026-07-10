@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
@@ -21,9 +22,14 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', entriesRoutes);
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Secure Data Vault API is running' });
-});
+if (process.env.NODE_ENV === 'production') {
+  const clientBuildPath = path.join(__dirname, '..', 'client', 'build');
+  app.use(express.static(clientBuildPath));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+}
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, dbState: 'connected' });
