@@ -1,11 +1,15 @@
 version: '3.8'
 services:
-  mongo:
-    image: mongo:6.0
+  postgres:
+    image: postgres:16-alpine
     restart: unless-stopped
+    environment:
+      POSTGRES_DB: secure_data_vault
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongo-data:/data/db
+      - postgres-data:/var/lib/postgresql/data
 volumes:
-  mongo-data:
+  postgres-data:

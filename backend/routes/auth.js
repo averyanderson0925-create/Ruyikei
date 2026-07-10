@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: admin._id, email: admin.email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: admin.id, email: admin.email }, process.env.JWT_SECRET, {
       expiresIn: '8h',
     });
 
@@ -31,7 +31,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// One-time registration: only allowed if no admin exists yet
 router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body;

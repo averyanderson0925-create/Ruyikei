@@ -1,5 +1,3 @@
-const path = require('path');
-const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -16,8 +14,6 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-connectDB();
-
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', entriesRoutes);
 
@@ -26,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, dbState: mongoose.connection.readyState });
+  res.json({ ok: true, dbState: 'connected' });
 });
 
 const seedAdmin = async () => {
@@ -43,10 +39,15 @@ const seedAdmin = async () => {
   }
 };
 
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
-  if (!process.env.JWT_SECRET) {
-    console.warn('Warning: JWT_SECRET is not set. Authentication may fail or produce invalid tokens. Set JWT_SECRET in .env for production.');
-  }
-  await seedAdmin();
-});
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, async () => {
+    console.log(`Server running on port ${PORT}`);
+    if (!process.env.JWT_SECRET) {
+      console.warn('Warning: JWT_SECRET is not set. Authentication may fail or produce invalid tokens. Set JWT_SECRET in .env for production.');
+    }
+    await seedAdmin();
+  });
+};
+
+startServer();
